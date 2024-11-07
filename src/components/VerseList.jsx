@@ -3,8 +3,7 @@ import VerseItem from './VerseItem';
 import './css/VerseList.css';
 
 const VerseList = ({ verses }) => {
-    console.log('Verses:', verses);
-    if (!verses || verses.length === 0) {
+    if (!verses || verses.length === 0 || !verses[0].reference) {
         return <p className="verse-list__empty">Nenhum versículo encontrado.</p>;
     }
 

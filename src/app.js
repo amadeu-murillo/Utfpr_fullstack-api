@@ -5,6 +5,7 @@ import SearchBar from './components/SearchBar';
 import './components/css/app.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { fetchVerses } from './services/api';
 
 
 const App = () => {
@@ -14,12 +15,11 @@ const App = () => {
         
     ]);
 
-    // Função de busca para filtrar versículos ou buscar em uma API
-    const handleSearch = (searchTerm) => {
-        const filteredVerses = verses.filter(verse =>
-            verse.text.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setVerses(filteredVerses);
+    // Função de busca que chama a API com o termo de busca
+    const handleSearch = async (searchTerm) => {
+        const data =  [];
+        data.push(await fetchVerses(searchTerm));
+        setVerses(data); // Atualiza o estado com os resultados da API
     };
 
     return (

@@ -18,7 +18,7 @@ const SearchBar = ({ onSearch }) => {
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
-                placeholder="Pesquise um versículo..."
+                placeholder="Pesquise um versículo (Ex: João 3:16)."
                 className="search-bar__input"
             />
             <button

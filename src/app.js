@@ -8,8 +8,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { fetchVerses } from './services/api';
 
-// Import the Verses page
+// Import the Verses and VerseView pages
 import Verses from './pages/Verses';
+import VerseView from './pages/VerseView';
 
 // Redux Imports
 import { Provider } from 'react-redux'; // Import the Provider from React-Redux
@@ -46,6 +47,8 @@ const App = () => {
                         />
                         {/* Verses page */}
                         <Route path="/verses" element={<Verses />} />
+                        {/* View Verses page */}
+                        <Route path="/view" element={<VerseView />} />
                         <Route 
                             path="*"
                             element={<div style={{ textAlign: 'center', margin: '20px' }}>404 - Page Not Found</div>} 

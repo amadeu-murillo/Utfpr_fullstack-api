@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedBook, setSelectedChapter, setSelectedVerse } from '../slices/bibleSlice';
 import bible from '../data/bible.json';
 
 const Verses = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Seleção do estado no Redux
   const selectedBook = useSelector((state) => state.bible.selectedBook);
@@ -24,7 +26,9 @@ const Verses = () => {
   // Função para selecionar um versículo
   const handleVerseSelect = (verse) => {
     dispatch(setSelectedVerse(verse));
+    navigate('/view');             
   };
+
 
   return (
     <div>

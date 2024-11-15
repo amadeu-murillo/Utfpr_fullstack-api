@@ -2,22 +2,20 @@ import React, { useState } from 'react';
 import './css/SearchBar.css';
 
 const SearchBar = ({ onSearch }) => {
-    const[searchTermVersiculo,setSearchTermVersiculo] = useState('');
-    const[searchTermlivro, setSearchTermLivro] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTermVersiculo, setSearchTermVersiculo] = useState('');
+    const [searchTermlivro, setSearchTermLivro] = useState('');
 
     const handleInputChange = (e) => {
         setSearchTermVersiculo(e.target.value);
     };
 
     const handleSelectChange = (e) => {
-
-        setSearchTermLivro(e.target.value); // Atualiza o searchTerm com o valor selecionado
+        setSearchTermLivro(e.target.value);
     };
 
     const handleSearchClick = () => {
-        setSearchTerm(searchTermlivro+' '+searchTermVersiculo);
-        onSearch(searchTerm);
+        const searchQuery = `${searchTermlivro} ${searchTermVersiculo}`;
+        onSearch(searchQuery);
     };
 
     return (
@@ -27,7 +25,7 @@ const SearchBar = ({ onSearch }) => {
                 id="livros-nt" 
                 name="livros-nt" 
                 onChange={handleSelectChange}
-                value={searchTermlivro} // Define o valor do select como o searchTerm
+                value={searchTermlivro}
             >
                 <option value="" disabled>Escolha um livro</option>
                 <option value="mateus">Mateus</option>

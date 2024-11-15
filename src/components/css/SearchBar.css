@@ -1,17 +1,47 @@
+/* SearchBar.css */
+
 .search-bar {
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin: 1.5rem 0;
+    gap: 0.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.search-bar label {
+    font-size: 1rem;
+    color: #2C3E50;
+    margin-right: 0.5rem;
+}
+
+#livros-nt {
+    padding: 0.6rem;
+    border: 2px solid #4A90E2;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #2C3E50;
+    background-color: white;
+    transition: border-color 0.3s;
+    min-width: 160px;
+    max-width: 100%;
+}
+
+#livros-nt:focus {
+    outline: none;
+    border-color: #357ABD;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
 }
 
 .search-bar__input {
-    width: 70%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 250px;
     padding: 0.75rem;
     border: 2px solid #4A90E2;
-    border-radius: 5px 0 0 5px; /* Bordas arredondadas à esquerda */
+    border-radius: 5px 0 0 5px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    color: #2C3E50;
 }
 
 .search-bar__input:focus {
@@ -25,15 +55,35 @@
     border: none;
     background-color: #4A90E2;
     color: white;
-    border-radius: 0 5px 5px 0; /* Bordas arredondadas à direita */
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.1s ease-in-out;
 }
 
 .search-bar__button:hover {
-    background-color: #357ABD; /* Cor do botão ao passar o mouse */
+    background-color: #357ABD;
 }
 
 .search-bar__button:focus {
-    outline: none; /* Remove a borda ao focar */
+    outline: none;
+    background-color: #357ABD;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.search-bar__button:active {
+    transform: scale(0.98); /* Efeito de pressionado */
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .search-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #livros-nt, .search-bar__input, .search-bar__button {
+        width: 100%;
+        border-radius: 5px;
+    }
 }

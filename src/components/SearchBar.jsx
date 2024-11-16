@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import bible from '../data/bible.json';
 import './css/SearchBar.css';
 
 const SearchBar = ({ onSearch }) => {
     const [searchTermVersiculo, setSearchTermVersiculo] = useState('');
     const [searchTermLivro, setSearchTermLivro] = useState('');
 
-    const livrosNT = [
-        "mateus", "marcos", "lucas", "joao", "atos", "romanos",
-        "1corintios", "2corintios", "galatas", "efesios", "filipenses",
-        "colossenses", "1tessalonicenses", "2tessalonicenses", "1timoteo",
-        "2timoteo", "tito", "filemom", "hebreus", "tiago", "1pedro",
-        "2pedro", "1joao", "2joao", "3joao", "judas", "apocalipse"
-    ];
+    // Gerar lista de livros a partir do JSON
+    const booksList = Object.entries(bible).flatMap(([testament, books]) =>
+        Object.entries(books).map(([key, bookData]) => ({
+            key, // Chave do livro (ex: "GEN")
+            name: bookData.name, // Nome do livro (ex: "Gênesis")
+            chapters: bookData.chapters, // Capítulos com seus versículos
+        }))
+    );
 
     const handleInputChange = (e) => {
         setSearchTermVersiculo(e.target.value);
@@ -27,10 +29,14 @@ const SearchBar = ({ onSearch }) => {
     };
 
     const handleRandomClick = () => {
-        const randomLivro = livrosNT[Math.floor(Math.random() * livrosNT.length)];
-        const randomVersiculo = `${Math.ceil(Math.random() * 28)}:${Math.ceil(Math.random() * 40)}`;
-        setSearchTermLivro(randomLivro);
-        setSearchTermVersiculo(randomVersiculo);
+        const randomBook = booksList[Math.floor(Math.random() * booksList.length)];
+        const randomChapterIndex = Math.floor(Math.random() * randomBook.chapters.length);
+        const randomChapter = randomBook.chapters[randomChapterIndex];
+        const randomVerse = Math.ceil(Math.random() * randomChapter.verses);
+
+        setSearchTermLivro(randomBook.key);
+        setSearchTermVersiculo(`${randomChapter.chapter}:${randomVerse}`);
+        onSearch(`${randomBook.key} ${randomChapter.chapter}:${randomVerse}`);
     };
 
     return (
@@ -42,18 +48,18 @@ const SearchBar = ({ onSearch }) => {
 
             <div className="search-bar__form">
                 <div className="search-bar__group">
-                    <label htmlFor="livros-nt" className="search-bar__label">Selecione um livro:</label>
+                    <label htmlFor="livros" className="search-bar__label">Selecione um livro:</label>
                     <select 
-                        id="livros-nt" 
-                        name="livros-nt" 
+                        id="livros" 
+                        name="livros" 
                         onChange={handleSelectChange}
                         value={searchTermLivro}
                         className="search-bar__select"
                     >
                         <option value="" disabled>Escolha um livro</option>
-                        {livrosNT.map(livro => (
-                            <option key={livro} value={livro}>
-                                {livro.charAt(0).toUpperCase() + livro.slice(1)}
+                        {booksList.map(book => (
+                            <option key={book.key} value={book.key}>
+                                {book.name}
                             </option>
                         ))}
                     </select>

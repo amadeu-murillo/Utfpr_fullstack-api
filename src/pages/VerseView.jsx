@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedVerse } from '../slices/bibleSlice';
 import { fetchVerses } from '../services/api';
+import { Button, Typography, Box } from '@mui/material';
+import './css/VerseView.css';
 
 const VerseView = () => {
   const dispatch = useDispatch();
@@ -17,7 +19,7 @@ const VerseView = () => {
   // Fetch conteúdo do versículo
   useEffect(() => {
     if (selectedBook && selectedChapter && selectedVerse) {
-      const searchTerm = `${selectedBook} ${selectedChapter.chapter}:${selectedVerse}`;
+      const searchTerm = `${selectedBook.key} ${selectedChapter.chapter}:${selectedVerse}`;
       fetchVerses(searchTerm).then((data) => {
         setVerseContent(data.text || 'Conteúdo não encontrado.');
       });
@@ -25,7 +27,7 @@ const VerseView = () => {
   }, [selectedBook, selectedChapter, selectedVerse]);
 
   if (!selectedBook || !selectedChapter || !selectedVerse) {
-    return <p>Selecione um versículo na lista para visualizar.</p>;
+    return <Typography>Selecione um versículo na lista para visualizar.</Typography>;
   }
 
   const isFirstVerse = selectedVerse === 1;
@@ -44,18 +46,51 @@ const VerseView = () => {
   };
 
   return (
-    <div>
-      <h1>{selectedBook}</h1>
-      <h2>Capítulo {selectedChapter.chapter}, Versículo {selectedVerse}</h2>
-      <p>{verseContent}</p>
+    <Box className="verse-view-container">
+      <Box className="verse-header">
+        <Typography variant="h4" component="h1">{selectedBook.name}</Typography> {/* Usando `selectedBook.name` */}
+        <Typography variant="h6" component="h2">
+          Capítulo {selectedChapter.chapter}, Versículo {selectedVerse}
+        </Typography>
+      </Box>
 
-      <div>
-        {!isFirstVerse && <button onClick={handlePrevVerse}>Versículo Anterior</button>}
-        {!isLastVerse && <button onClick={handleNextVerse}>Próximo Versículo</button>}
-      </div>
+      <Box className="verse-content">
+        <Typography>{verseContent}</Typography>
+      </Box>
 
-      <button onClick={() => navigate('/')}>Voltar</button>
-    </div>
+      <Box className="button-group">
+        {!isFirstVerse && (
+          <Button 
+            variant="contained" 
+            onClick={handlePrevVerse} 
+            className="nav-button"
+            color="primary"
+          >
+            Versículo Anterior
+          </Button>
+        )}
+        {!isLastVerse && (
+          <Button 
+            variant="contained" 
+            onClick={handleNextVerse} 
+            className="nav-button"
+            color="primary"
+          >
+            Próximo Versículo
+          </Button>
+        )}
+      </Box>
+
+      <Button 
+        variant="outlined" 
+        onClick={() => navigate('/')} 
+        className="back-button"
+        color="secondary"
+        style={{ marginTop: '20px' }}
+      >
+        Voltar
+      </Button>
+    </Box>
   );
 };
 

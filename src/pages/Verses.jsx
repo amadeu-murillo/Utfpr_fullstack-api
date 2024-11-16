@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedBook, setSelectedChapter, setSelectedVerse } from '../slices/bibleSlice';
 import bible from '../data/bible.json';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Grid, Paper } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import './css/Verses.css';
 
 const Verses = () => {
   const dispatch = useDispatch();
@@ -11,11 +14,10 @@ const Verses = () => {
   // Seleção do estado no Redux
   const selectedBook = useSelector((state) => state.bible.selectedBook);
   const selectedChapter = useSelector((state) => state.bible.selectedChapter);
-  const selectedVerse = useSelector((state) => state.bible.selectedVerse);
 
   // Função para selecionar um livro
-  const handleBookSelect = (book) => {
-    dispatch(setSelectedBook(book));
+  const handleBookSelect = (bookData) => {
+    dispatch(setSelectedBook(bookData));
   };
 
   // Função para selecionar um capítulo
@@ -26,86 +28,105 @@ const Verses = () => {
   // Função para selecionar um versículo
   const handleVerseSelect = (verse) => {
     dispatch(setSelectedVerse(verse));
-    navigate('/view');             
+    navigate('/view'); // Redireciona para a visualização do versículo selecionado
   };
 
-
   return (
-    <div>
-      <h1>Versículos</h1>
-
+    <div className="verses-container">
       {/* Dropdown para os livros */}
       <div className="testaments">
-        <h2>Antigo Testamento</h2>
-        <ul>
-          {Object.keys(bible['Old Testament']).map((book) => (
-            <li key={book}>
-              <span onClick={() => handleBookSelect(book)}>{book}</span>
-              {selectedBook === book && (
-                <ul>
-                  {bible['Old Testament'][book].map((chapter) => (
-                    <li key={chapter.chapter}>
-                      <span onClick={() => handleChapterSelect(chapter)}>
-                        Capítulo {chapter.chapter}
-                      </span>
-                      {selectedChapter && selectedChapter.chapter === chapter.chapter && (
-                        <ul>
-                          {[...Array(chapter.verses)].map((_, index) => (
-                            <li key={index}>
-                              <span onClick={() => handleVerseSelect(index + 1)}>
-                                Versículo {index + 1}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-        <h2>Novo Testamento</h2>
-        <ul>
-          {Object.keys(bible['New Testament']).map((book) => (
-            <li key={book}>
-              <span onClick={() => handleBookSelect(book)}>{book}</span>
-              {selectedBook === book && (
-                <ul>
-                  {bible['New Testament'][book].map((chapter) => (
-                    <li key={chapter.chapter}>
-                      <span onClick={() => handleChapterSelect(chapter)}>
-                        Capítulo {chapter.chapter}
-                      </span>
-                      {selectedChapter && selectedChapter.chapter === chapter.chapter && (
-                        <ul>
-                          {[...Array(chapter.verses)].map((_, index) => (
-                            <li key={index}>
-                              <span onClick={() => handleVerseSelect(index + 1)}>
-                                Versículo {index + 1}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
+        {/* Accordion para o Antigo Testamento */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Antigo Testamento</Typography>
+          </AccordionSummary>
+          <AccordionDetails className="accordion-content">
+            {Object.keys(bible['Old Testament']).map((bookKey) => {
+              const bookData = bible['Old Testament'][bookKey];
+              return (
+                <Accordion key={bookKey} className="book-accordion">
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={() => handleBookSelect(bookData)}>
+                    <Typography>{bookData.name}</Typography> {/* Título do livro ajustado */}
+                  </AccordionSummary>
+                  <AccordionDetails className="accordion-content">
+                    {selectedBook?.name === bookData.name && bookData.chapters.map((chapter) => (
+                      <Accordion key={chapter.chapter} className="chapter-accordion">
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={() => handleChapterSelect(chapter)}>
+                          <Typography>Capítulo {chapter.chapter}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails className="accordion-content">
+                          {/* Exibir versículos se um capítulo for selecionado */}
+                          {selectedChapter && selectedChapter.chapter === chapter.chapter && (
+                            <Grid container spacing={1} className="verses-grid">
+                              {[...Array(chapter.verses)].map((_, index) => (
+                                <Grid item key={index} xs={3} sm={2} md={1}>
+                                  <Paper
+                                    className="verse-box"
+                                    onClick={() => handleVerseSelect(index + 1)}
+                                    elevation={2}
+                                  >
+                                    {index + 1}
+                                  </Paper>
+                                </Grid>
+                              ))}
+                            </Grid>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
+          </AccordionDetails>
+        </Accordion>
 
-      {/* Exibir versículos se um capítulo for selecionado */}
-      {selectedChapter && (
-        <div className="verses">
-          <h4>Versículos do Capítulo {selectedChapter.chapter}</h4>
-          <p>Selecione um versículo</p>
-          {selectedVerse && <p>Você selecionou o versículo {selectedVerse}</p>}
-        </div>
-      )}
+        {/* Accordion para o Novo Testamento */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Novo Testamento</Typography>
+          </AccordionSummary>
+          <AccordionDetails className="accordion-content">
+            {Object.keys(bible['New Testament']).map((bookKey) => {
+              const bookData = bible['New Testament'][bookKey];
+              return (
+                <Accordion key={bookKey} className="book-accordion">
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={() => handleBookSelect(bookData)}>
+                    <Typography>{bookData.name}</Typography> {/* Título do livro ajustado */}
+                  </AccordionSummary>
+                  <AccordionDetails className="accordion-content">
+                    {selectedBook?.name === bookData.name && bookData.chapters.map((chapter) => (
+                      <Accordion key={chapter.chapter} className="chapter-accordion">
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={() => handleChapterSelect(chapter)}>
+                          <Typography>Capítulo {chapter.chapter}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails className="accordion-content">
+                          {/* Exibir versículos se um capítulo for selecionado */}
+                          {selectedChapter && selectedChapter.chapter === chapter.chapter && (
+                            <Grid container spacing={1} className="verses-grid">
+                              {[...Array(chapter.verses)].map((_, index) => (
+                                <Grid item key={index} xs={3} sm={2} md={1}>
+                                  <Paper
+                                    className="verse-box"
+                                    onClick={() => handleVerseSelect(index + 1)}
+                                    elevation={2}
+                                  >
+                                    {index + 1}
+                                  </Paper>
+                                </Grid>
+                              ))}
+                            </Grid>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
+          </AccordionDetails>
+        </Accordion>
+      </div>
     </div>
   );
 };

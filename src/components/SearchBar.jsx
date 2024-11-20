@@ -5,6 +5,7 @@ import './css/SearchBar.css';
 const SearchBar = ({ onSearch }) => {
     const [searchTermVersiculo, setSearchTermVersiculo] = useState('');
     const [searchTermLivro, setSearchTermLivro] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Gerar lista de livros a partir do JSON
     const booksList = Object.entries(bible).flatMap(([testament, books]) =>
@@ -17,15 +18,46 @@ const SearchBar = ({ onSearch }) => {
 
     const handleInputChange = (e) => {
         setSearchTermVersiculo(e.target.value);
+        setErrorMessage('');
     };
 
     const handleSelectChange = (e) => {
         setSearchTermLivro(e.target.value);
+        setErrorMessage('');
+    };
+
+    const validateInput = () => {
+        if (!searchTermLivro) {
+            setErrorMessage('Por favor, selecione um livro.');
+            return false;
+        }
+
+        if (!searchTermVersiculo.match(/^\d+:\d+$/)) {
+            setErrorMessage('Formato inválido. Use o formato Capítulo:Versículo (ex: 3:16).');
+            return false;
+        }
+
+        const [chapter, verse] = searchTermVersiculo.split(':').map(Number);
+        const selectedBook = booksList.find(book => book.key === searchTermLivro);
+
+        if (!selectedBook || !selectedBook.chapters[chapter - 1]) {
+            setErrorMessage('Capítulo não encontrado no livro selecionado.');
+            return false;
+        }
+
+        if (verse < 1 || verse > selectedBook.chapters[chapter - 1].verses) {
+            setErrorMessage('Versículo fora do intervalo válido.');
+            return false;
+        }
+
+        return true;
     };
 
     const handleSearchClick = () => {
-        const searchQuery = `${searchTermLivro} ${searchTermVersiculo}`;
-        onSearch(searchQuery);
+        if (validateInput()) {
+            const searchQuery = `${searchTermLivro} ${searchTermVersiculo}`;
+            onSearch(searchQuery);
+        }
     };
 
     const handleRandomClick = () => {
@@ -37,6 +69,7 @@ const SearchBar = ({ onSearch }) => {
         setSearchTermLivro(randomBook.key);
         setSearchTermVersiculo(`${randomChapter.chapter}:${randomVerse}`);
         onSearch(`${randomBook.key} ${randomChapter.chapter}:${randomVerse}`);
+        setErrorMessage('');
     };
 
     return (
@@ -76,6 +109,8 @@ const SearchBar = ({ onSearch }) => {
                         className="search-bar__input"
                     />
                 </div>
+
+                {errorMessage && <p className="search-bar__error">{errorMessage}</p>}
 
                 <div className="search-bar__actions">
                     <button

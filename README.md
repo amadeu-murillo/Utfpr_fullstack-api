@@ -1,6 +1,6 @@
-# 📖 Bíblia CLI
+# 📖 Bíblia API
 
-**Bíblia CLI** é uma aplicação web desenvolvida como parte da disciplina **Web Full Stack** do **2º semestre de 2024**, no curso de **Análise e Desenvolvimento de Sistemas** da **UTFPR**. O projeto permite aos usuários navegar pela Bíblia Sagrada, pesquisar por livros, capítulos e versículos, e buscar uma mensagem para inspiração diária. 
+**Bíblia API** é uma aplicação web desenvolvida como parte da disciplina **Web Full Stack** do **2º semestre de 2024**, no curso de **Análise e Desenvolvimento de Sistemas** da **UTFPR**. O projeto permite aos usuários navegar pela Bíblia Sagrada, pesquisar por livros, capítulos e versículos, e buscar uma mensagem para inspiração diária. 
 
 ## 🚀 Funcionalidades
 
